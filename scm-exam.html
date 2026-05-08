@@ -4,11 +4,84 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>奥琦玮供应链随堂测试</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:#f5f7fa;color:#333;min-height:100vh}
+.container{max-width:800px;margin:0 auto;padding:20px}
+.card{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.1);padding:30px;margin-bottom:20px}
+h1{font-size:24px;text-align:center;color:#1890ff;margin-bottom:30px}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;margin-bottom:8px;font-weight:500}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 16px;border:1px solid #e8e8e8;border-radius:8px;font-size:16px}
+.form-group input:focus,.form-group textarea:focus{outline:none;border-color:#1890ff}
+.btn{display:inline-block;padding:12px 24px;border:none;border-radius:8px;font-size:16px;cursor:pointer;transition:all .3s;text-align:center;text-decoration:none}
+.btn-primary{background:#1890ff;color:#fff}
+.btn-primary:hover{background:#40a9ff}
+.btn-secondary{background:#fff;color:#333;border:1px solid #e8e8e8}
+.btn-secondary:hover{border-color:#1890ff;color:#1890ff}
+.btn-danger{background:#ff4d4f;color:#fff}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.exam-header{text-align:center;margin-bottom:30px}
+.exam-info{display:flex;justify-content:center;gap:20px;margin:20px 0;flex-wrap:wrap}
+.exam-info span{background:#e6f7ff;color:#1890ff;padding:8px 16px;border-radius:20px;font-size:14px}
+.progress-bar{background:#e8e8e8;height:8px;border-radius:4px;margin-bottom:20px;overflow:hidden}
+.progress-bar .progress{background:#1890ff;height:100%;transition:width .3s}
+.question-card{background:#fff;border-radius:12px;padding:24px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.question-number{display:inline-block;background:#1890ff;color:#fff;width:28px;height:28px;line-height:28px;text-align:center;border-radius:50%;font-size:14px;margin-right:10px}
+.question-text{font-size:16px;line-height:1.6}
+.options{display:flex;flex-direction:column;gap:12px}
+.option{display:flex;align-items:center;padding:16px;border:2px solid #e8e8e8;border-radius:10px;cursor:pointer;transition:all .3s}
+.option:hover{border-color:#1890ff;background:#f0f7ff}
+.option.selected{border-color:#1890ff;background:#e6f7ff}
+.option-letter{width:32px;height:32px;line-height:32px;text-align:center;border-radius:50%;background:#e8e8e8;margin-right:12px;font-weight:600;flex-shrink:0}
+.option.selected .option-letter{background:#1890ff;color:#fff}
+.option-text{flex:1}
+.exam-actions{display:flex;justify-content:space-between;margin-top:30px}
+.result-card{text-align:center;padding:40px}
+.score-big{font-size:72px;font-weight:bold;margin:20px 0}
+.score-big.pass{color:#52c41a}
+.score-big.fail{color:#ff4d4f}
+.score-detail{display:flex;justify-content:center;gap:40px;margin:30px 0}
+.score-detail div{text-align:center}
+.score-detail .num{font-size:28px;font-weight:bold;color:#1890ff}
+.score-detail .label{color:#666;font-size:14px;margin-top:5px}
+.admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #e8e8e8}
+.admin-tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.tab-btn{padding:10px 20px;border:1px solid #e8e8e8;background:#fff;border-radius:8px;cursor:pointer;transition:all .3s;font-size:14px}
+.tab-btn.active{background:#1890ff;color:#fff;border-color:#1890ff}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{padding:12px;text-align:left;border-bottom:1px solid #e8e8e8}
+.table th{background:#fafafa;font-weight:600}
+.table tr:hover{background:#f5f5f5}
+.badge{display:inline-block;padding:4px 8px;border-radius:4px;font-size:12px;background:#e6f7ff;color:#1890ff}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin:20px 0}
+.stat-card{background:linear-gradient(135deg,#1890ff,#40a9ff);color:#fff;padding:24px;border-radius:12px;text-align:center}
+.stat-card.green{background:linear-gradient(135deg,#52c41a,#73d13d)}
+.stat-card.orange{background:linear-gradient(135deg,#faad14,#ffc53d)}
+.stat-card .num{font-size:36px;font-weight:bold}
+.stat-card .label{opacity:.9;margin-top:8px}
+.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center}
+.modal.show{display:flex}
+.modal-content{background:#fff;border-radius:12px;padding:30px;max-width:600px;width:90%;max-height:90vh;overflow-y:auto}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.modal-close{width:32px;height:32px;border:none;background:none;font-size:24px;cursor:pointer}
+.empty{text-align:center;padding:60px 20px;color:#666}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:12px 24px;border-radius:8px;z-index:2000;opacity:0;transition:opacity .3s}
+.toast.show{opacity:1}
+.toast.success{background:#52c41a}
+.toast.error{background:#ff4d4f}
+@media(max-width:600px){.container{padding:15px}.card{padding:20px}h1{font-size:20px}.exam-info{gap:10px}.score-detail{flex-direction:column;gap:20px}.stats-grid{grid-template-columns:1fr 1fr}}
+</style>
 </head>
-<body><div id="app"></div>
+<body>
+<div id="app"></div>
+
 <script>
 (function(){
-var Q=[
+'use strict';
+
+// 题库数据
+var QUESTIONS = [
 {id:1,m:1,q:"易企APP在哪里可以下载？",a:["手机应用商店","电脑官网","微信小程序"],n:0,e:"易企APP可在手机应用商店搜索下载"},
 {id:2,m:1,q:"首次登录易企APP需要什么信息？",a:["手机号和验证码","账号和密码","身份证号码"],n:1,e:"首次登录需要输入分配的账号和密码"},
 {id:3,m:1,q:"忘记密码后应该联系谁？",a:["自行重置","联系管理员","无法找回"],n:1,e:"密码重置需要联系系统管理员处理"},
@@ -20,7 +93,7 @@ var Q=[
 {id:9,m:2,q:"订货单审核通过后会怎样？",a:["直接发货","自动分单给供应商","需再次确认"],n:1,e:"系统会自动分单给对应供应商"},
 {id:10,m:2,q:"可以在订货单中添加备注吗？",a:["不可以","可填写特殊要求","只能管理员添加"],n:1,e:"可填写备注说明特殊要求"},
 {id:11,m:2,q:"订货单状态不包括以下哪个？",a:["待审核","已发货","已归档"],n:2,e:"不包括已归档状态"},
-{id:12,m:2,q:"一个订货单可以包含多少个货品？",a:"只能1个,只能10个以内,数量不限".split(","),n:2,e:"可包含任意数量的货品"},
+{id:12,m:2,q:"一个订货单可以包含多少个货品？",a:["只能1个","只能10个以内","数量不限"],n:2,e:"可包含任意数量的货品"},
 {id:13,m:3,q:"采购入库单由谁创建？",a:["门店","供应商","总部采购"],n:1,e:"由供应商在系统中创建"},
 {id:14,m:3,q:"收到货品发现数量不符怎么办？",a:["直接签收","填写实际收货数量","拒收全部"],n:1,e:"填写实际收货数，系统自动生成退配单"},
 {id:15,m:3,q:"采购退货需要什么条件？",a:["随时可退","需先有入库记录","需领导审批"],n:1,e:"需先有对应入库记录"},
@@ -32,7 +105,7 @@ var Q=[
 {id:21,m:4,q:"入库少于配送数量时系统会？",a:["自动补货","自动生成退配单","自动罚款"],n:1,e:"自动生成退配单给供应商"},
 {id:22,m:4,q:"退配单由谁处理？",a:["门店","供应商","物流公司"],n:1,e:"由供应商接收并处理退货"},
 {id:23,m:4,q:"已签收表示什么？",a:["门店已收货","供应商已发货","物流已揽件"],n:0,e:"表示门店已确认收货入库"},
-{id:24,m:4,q:"入库时间可在手机上改吗？",a:"可随意改,不可改,需申请审批".split(","),n:2,e:"为系统自动记录，修改需走审批流程"},
+{id:24,m:4,q:"入库时间可在手机上改吗？",a:["可随意改","不可改","需申请审批"],n:2,e:"为系统自动记录，修改需走审批流程"},
 {id:25,m:5,q:"委托收货是什么意思？",a:["委托物流公司收货","委托其他门店代收货物","委托供应商发货"],n:1,e:"委托其他门店代为签收和保管货物"},
 {id:26,m:5,q:"委托收货需要设置什么？",a:["无需设置","设置委托关系","双方协议"],n:1,e:"需在系统中设置门店间委托关系"},
 {id:27,m:5,q:"委托收货后货物归属谁？",a:["委托方门店","被委托方门店","总部统一管理"],n:0,e:"归属委托方门店，被委托方只是代收"},
@@ -43,7 +116,7 @@ var Q=[
 {id:32,m:6,q:"库存报溢是什么操作？",a:["减少库存","增加库存数量","转移库存"],n:1,e:"将实际多出的库存增加记录"},
 {id:33,m:6,q:"报损报溢需提供什么？",a:["无需凭证","图片或说明","领导签字"],n:1,e:"需上传图片或填写说明作为凭证"},
 {id:34,m:6,q:"报损报溢单需审核吗？",a:["自动通过","需要审核","看金额大小"],n:1,e:"需相关人员审核后生效"},
-{id:35,m:6,q:"报溢库存可随便加吗？",a:"可随意填,必须有实际依据,系统自动计算".split(","),n:1,e:"必须有实际盘点数据作为依据"},
+{id:35,m:6,q:"报溢库存可随便加吗？",a:["可随意填","必须有实际依据","系统自动计算"],n:1,e:"必须有实际盘点数据作为依据"},
 {id:36,m:7,q:"库存查询在APP哪里？",a:["首页","我的","库存模块"],n:2,e:"在易企APP的库存模块中"},
 {id:37,m:7,q:"可以查哪些库存？",a:["只能查自己门店","绑定门店的库存","所有门店"],n:1,e:"可查自己绑定门店的库存数据"},
 {id:38,m:7,q:"新建盘点单的前提是什么？",a:["随时可建","仓库必须有库存","必须报损后"],n:1,e:"仓库必须有期初数据或出入库记录"},
@@ -70,315 +143,150 @@ var Q=[
 {id:59,m:2,q:"订货模板的作用是什么？",a:["没有作用","快速添加常用货品","限制订货种类"],n:1,e:"快速添加常用货品提高效率"},
 {id:60,m:7,q:"盘点差异指什么？",a:["不是","导入库存与实际库存差值","预期差异"],n:1,e:"系统导入数与实际盘点数的差值"}
 ];
-var C={t:'奥琦玮供应链随堂测试',n:20,p:5,s:80,pw:'aqw2024scm'};
-var S={qs:[],eq:[],ci:0,an:{},nm:'',st:null,timer:null,rec:[],tab:'q'};
-var MN={1:'APP下载与登录',2:'门店订货操作',3:'采购入库/退货',4:'配送入库/退配',5:'委托收货/退回',6:'库存报损/报溢',7:'库存查询与盘点',8:'调拨与领用'};
-function E(id){return document.getElementById(id)}
-function sh(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
-function mn(m){return MN[m]||'未知'}
-function tk(msg,tp){tp=tp||'';var o=document.querySelector('.toast');if(o)o.parentNode.removeChild(o);var d=document.createElement('div');d.className='toast '+tp;d.textContent=msg;document.body.appendChild(d);setTimeout(function(){d.className+=' show'},10);setTimeout(function(){d.className=d.className.replace(' show','');setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d)},300)},2500)}
-function ld(){try{var s=localStorage.getItem('sq_v3');if(s)S.qs=JSON.parse(s);else S.qs=Q.slice();S.rec=JSON.parse(localStorage.getItem('sr_v3')||'[]')}catch(e){S.qs=Q.slice();S.rec=[]}}
-function sv(){try{localStorage.setItem('sq_v3',JSON.stringify(S.qs));localStorage.setItem('sr_v3',JSON.stringify(S.rec))}catch(e){}}
 
-/* CSS */
-var CSS='*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:#f5f7fa;color:#333;min-height:100vh}.container{max-width:800px;margin:0 auto;padding:20px}.card{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.1);padding:30px;margin-bottom:20px}h1{font-size:24px;text-align:center;color:#1890ff;margin-bottom:30px}h2{font-size:20px;margin-bottom:20px}.fg{margin-bottom:20px}.fg label{display:block;margin-bottom:8px;font-weight:500}.fg input,.fg select,.fg textarea{width:100%;padding:12px 16px;border:1px solid #e8e8e8;border-radius:8px;font-size:16px;transition:border-color .3s}.fg input:focus,.fg textarea:focus{outline:none;border-color:#1890ff}.btn{display:inline-block;padding:12px 24px;border:none;border-radius:8px;font-size:16px;cursor:pointer;transition:all .3s;text-align:center}.btn-p{background:#1890ff;color:#fff}.btn-p:hover{background:#40a9ff}.btn-s{background:#52c41a;color:#fff}.btn-d{background:#ff4d4f;color:#fff}.btn-sec{background:#fff;color:#333;border:1px solid #e8e8e8}.btn-sec:hover{border-color:#1890ff;color:#1890ff}.btn:disabled{opacity:.6;cursor:not-allowed}.eh{text-align:center;margin-bottom:30px}.ei{display:flex;justify-content:center;gap:20px;margin:20px 0;flex-wrap:wrap}.ei span{background:#e6f7ff;color:#1890ff;padding:8px 16px;border-radius:20px;font-size:14px}.pb{background:#e8e8e8;height:8px;border-radius:4px;margin-bottom:20px;overflow:hidden}.pb .pg{background:#1890ff;height:100%;transition:width .3s}.qc{background:#fff;border-radius:12px;padding:24px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.1)}.qn{display:inline-block;background:#1890ff;color:#fff;width:28px;height:28px;line-height:28px;text-align:center;border-radius:50%;font-size:14px;margin-right:10px}.qt{font-size:16px;line-height:1.6;margin-bottom:20px}.ops{display:flex;flex-direction:column;gap:12px}.op{display:flex;align-items:center;padding:16px;border:2px solid #e8e8e8;border-radius:10px;cursor:pointer;transition:all .3s}.op:hover{border-color:#1890ff;background:#f0f7ff}.op.sel{border-color:#1890ff;background:#e6f7ff}.op .ol{width:32px;height:32px;line-height:32px;text-align:center;border-radius:50%;background:#e8e8e8;margin-right:12px;font-weight:600;flex-shrink:0}.op.sel .ol{background:#1890ff;color:#fff}.op .ot{flex:1}.ea{display:flex;justify-content:space-between;margin-top:30px}.rc{text-align:center;padding:40px}.sb{font-size:72px;font-weight:bold;margin:20px 0}.sb.ok{color:#52c41a}.sb.ng{color:#ff4d4f}.sd{display:flex;justify-content:center;gap:40px;margin:30px 0}.sd div{text-align:center}.sd .nu{font-size:28px;font-weight:bold;color:#1890ff}.sd .lb{color:#666;font-size:14px;margin-top:5px}.ah{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #e8e8e8}.at{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}.tb{padding:10px 20px;border:1px solid #e8e8e8;background:#fff;border-radius:8px;cursor:pointer;transition:all .3s;font-size:14px}.tb.on{background:#1890ff;color:#fff;border-color:#1890ff}.tc{display:none}.tc.on{display:block}.tbl{width:100%;border-collapse:collapse}.tbl th,.tbl td{padding:12px;text-align:left;border-bottom:1px solid #e8e8e8}.tbl th{background:#fafafa;font-weight:600}.tbl tr:hover{background:#f5f5f5}.bdg{display:inline-block;padding:4px 8px;border-radius:4px;font-size:12px}.bdg-m{background:#e6f7ff;color:#1890ff}.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin:20px 0}.sc{background:linear-gradient(135deg,#1890ff,#40a9ff);color:#fff;padding:24px;border-radius:12px;text-align:center}.sc.gr{background:linear-gradient(135deg,#52c41a,#73d13d)}.sc.or{background:linear-gradient(135deg,#faad14,#ffc53d)}.sc .nu{font-size:36px;font-weight:bold}.sc .lb{opacity:.9;margin-top:8px}.md{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center}.md.show{display:flex}.mc{background:#fff;border-radius:12px;padding:30px;max-width:600px;width:90%;max-height:90vh;overflow-y:auto}.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.clb{width:32px;height:32px;border:none;background:none;font-size:24px;cursor:pointer}.tb2{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}.tb2 .se{flex:1;min-width:200px}.mt{text-align:center;padding:60px 20px;color:#666}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:12px 24px;border-radius:8px;z-index:2000;opacity:0;transition:opacity .3s}.toast.show{opacity:1}.toast.ok{background:#52c41a}.toast.err{background:#ff4d4f}@media(max-width:600px){.container{padding:15px}.card{padding:20px}h1{font-size:20px}.ei{gap:10px}.sd{flex-direction:column;gap:20px}.sg{grid-template-columns:1fr 1fr}}';
+var CONFIG = {t:'奥琦玮供应链随堂测试',n:20,p:5,s:80,pw:'aqw2024scm'};
+var STATE = {qs:[],eq:[],ci:0,an:{},nm:'',st:null,timer:null,rec:[],tab:'q'};
+var MODULES = {1:'APP下载与登录',2:'门店订货操作',3:'采购入库/退货',4:'配送入库/退配',5:'委托收货/退回',6:'库存报损/报溢',7:'库存查询与盘点',8:'调拨与领用'};
 
-/* 路由 */
-function rt(){
-  var p=window.location.search;
-  if(p.indexOf('mode=admin')!==-1)cA();
-  else sp();
+function $(id){return document.getElementById(id)}
+function shuffle(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function getModule(m){return MODULES[m]||'未知'}
+function toast(msg,type){type=type||'';var old=document.querySelector('.toast');if(old)old.parentNode.removeChild(old);var el=document.createElement('div');el.className='toast '+type;el.textContent=msg;document.body.appendChild(el);setTimeout(function(){el.className+=' show'},10);setTimeout(function(){el.className=el.className.replace(' show','');setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el)},300)},2500)}
+function loadData(){try{var s=localStorage.getItem('sq_v4');if(s)STATE.qs=JSON.parse(s);else STATE.qs=QUESTIONS.slice();STATE.rec=JSON.parse(localStorage.getItem('sr_v4')||'[]')}catch(e){STATE.qs=QUESTIONS.slice();STATE.rec=[]}}
+function saveData(){try{localStorage.setItem('sq_v4',JSON.stringify(STATE.qs));localStorage.setItem('sr_v4',JSON.stringify(STATE.rec))}catch(e){}}
+
+function route(){var p=window.location.search;if(p.indexOf('mode=admin')!==-1)checkAdmin();else showStart()}
+
+function showStart(){
+  stopTimer();
+  $('app').innerHTML='<div class="container"><div class="card"><h1>📚 '+CONFIG.t+'</h1><p style="text-align:center;color:#666;margin-bottom:30px">扫码参与考试或点击下方开始</p><div style="text-align:center;margin-bottom:30px"><a href="?mode=admin" class="btn btn-secondary" style="font-size:14px">🔧 后台管理</a></div><div class="form-group"><input type="text" id="nameInput" placeholder="请输入您的姓名" required autocomplete="off"></div><button type="button" onclick="startExam()" class="btn btn-primary" style="width:100%">开始考试</button><div style="margin-top:30px;padding:20px;background:#f5f5f5;border-radius:8px"><h3 style="margin-bottom:10px">📖 考试说明</h3><ul style="color:#666;font-size:14px;line-height:2.2;padding-left:20px"><li>共 '+CONFIG.n+' 道题目，每题 '+CONFIG.p+' 分</li><li>满分 '+(CONFIG.n*CONFIG.p)+' 分，及格线 '+CONFIG.s+' 分</li><li>每题 3 个选项，点击选择答案</li><li>提交后显示成绩和错题解析</li></ul></div></div></div>';
+  setTimeout(function(){var x=$('nameInput');if(x)x.focus()},100);
 }
 
-/* 开始页 */
-function sp(){
-  ct();
-  var h='<style>'+CSS+'</style><div class="container"><div class="card"><h1>📚 '+C.t+'</h1><p style="text-align:center;color:#666;margin-bottom:30px">扫码参与考试或点击下方开始</p><div style="text-align:center;margin-bottom:30px"><a href="?mode=admin" class="btn btn-sec" style="font-size:14px">🔧 后台管理</a></div><div class="fg"><input type="text" id="ni" placeholder="请输入您的姓名" required autocomplete="off"></div><button type="button" onclick="startE()" class="btn btn-p" style="width:100%">开始考试</button><div style="margin-top:30px;padding:20px;background:#f5f5f5;border-radius:8px"><h3 style="margin-bottom:10px">📖 考试说明</h3><ul style="color:#666;font-size:14px;line-height:2.2;padding-left:20px"><li>共 '+C.n+' 道题目，每题 '+C.p+' 分</li><li>满分 '+(C.n*C.p)+' 分，及格线 '+C.s+' 分</li><li>每题 3 个选项，点击选择答案</li><li>提交后显示成绩和错题解析</li></ul></div></div></div>';
-  E('app').innerHTML=h;
-  setTimeout(function(){var x=E('ni');if(x)x.focus()},100);
-}
-window.startE=function(){
-  var v=(E('ni')||{}).value||'';v=v.trim();
-  if(!v){tk('请输入姓名','err');return}
-  S.nm=v;S.eq=sh(S.qs.slice()).slice(0,C.n);S.an={};S.ci=0;S.st=new Date();tr();rQ();
+window.startExam=function(){
+  var v=($('nameInput')||{}).value||'';v=v.trim();
+  if(!v){toast('请输入姓名','error');return}
+  STATE.nm=v;STATE.eq=shuffle(STATE.qs.slice()).slice(0,CONFIG.n);STATE.an={};STATE.ci=0;STATE.st=new Date();startTimer();renderQuestion();
 };
 
-/* 渲染题目 */
-function rQ(){
-  var q=S.eq[S.ci];if(!q)return;
-  var tl=S.eq.length,idx=S.ci,pct=((idx+1)/tl*100).toFixed(1),sa=S.an[idx];
-  var oh='';
-  for(var i=0;i<q.a.length;i++){
-    var L=String.fromCharCode(65+i),cl=(sa===i)?' sel':'';
-    oh+='<div class="op'+cl+'" data-i="'+i+'" onclick="selO('+i+')"><span class="ol">'+L+'</span><span class="ot">'+q.a[i]+'</span></div>';
-  }
-  var nh='';
-  for(var b=0;b<tl;b++){var bc='tb';var bs='';
-    if(b===idx){bc+=' on';bs+='background:#1890ff;color:#fff;border-color:#1890ff;'}
-    else if(S.an[b]!==undefined){bs+='background:#e6f7ff;border-color:#1890ff;color:#1890ff;'}
-    nh+='<button onclick="goQ('+b+')" class="'+bc+'" style="width:32px;height:32px;padding:0;'+bs+'">'+(b+1)+'</button>';}
-  var pd=(idx===0)?' disabled':'';
-  var nb=(idx===tl-1)?'<button type="button" onclick="subE()" class="btn btn-p">提交试卷</button>':'<button type="button" onclick="nxQ()" class="btn btn-p">下一题 →</button>';
-  E('app').innerHTML=
-    '<style>'+CSS+'</style>'+
-    '<div class="container"><div class="card">'+
-      '<div class="eh"><h1>'+C.t+'</h1><div class="ei"><span>姓名：'+S.nm+'</span><span id="tm">00:00</span><span>'+(idx+1)+' / '+tl+'</span></div></div>'+
-      '<div class="pb"><div class="pg" style="width:'+pct+'%"></div></div>'+
-      '<div class="qc"><span class="qn">'+(idx+1)+'</span><span class="qt">'+q.q+'</span></div>'+
-      '<div class="ops">'+oh+'</div>'+
-      '<div class="ea"><button type="button" onclick="pvQ()" class="btn btn-sec"'+pd+'>← 上一题</button>'+nb+'</div>'+
-    '</div>'+
-    '<div style="text-align:center;margin-top:20px"><div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap">'+nh+'</div></div>'+
-    '</div>';
+function renderQuestion(){
+  var q=STATE.eq[STATE.ci];if(!q)return;
+  var total=STATE.eq.length,idx=STATE.ci,pct=((idx+1)/total*100).toFixed(1),sa=STATE.an[idx];
+  var optsHtml='';
+  for(var i=0;i<q.a.length;i++){var L=String.fromCharCode(65+i),cl=(sa===i)?' selected':'';optsHtml+='<div class="option'+cl+'" onclick="selectOption('+i+')"><span class="option-letter">'+L+'</span><span class="option-text">'+q.a[i]+'</span></div>';}
+  var navBtns='';
+  for(var b=0;b<total;b++){var bc='tab-btn',bs='';if(b===idx){bc+=' active';bs+='background:#1890ff;color:#fff;border-color:#1890ff;'}else if(STATE.an[b]!==undefined){bs+='background:#e6f7ff;border-color:#1890ff;color:#1890ff;'}navBtns+='<button onclick="goQuestion('+b+')" class="'+bc+'" style="width:32px;height:32px;padding:0;'+bs+'">'+(b+1)+'</button>';}
+  var prevDisabled=(idx===0)?' disabled':'';
+  var nextBtn=(idx===total-1)?'<button type="button" onclick="submitExam()" class="btn btn-primary">提交试卷</button>':'<button type="button" onclick="nextQuestion()" class="btn btn-primary">下一题 →</button>';
+  $('app').innerHTML='<div class="container"><div class="card"><div class="exam-header"><h1>'+CONFIG.t+'</h1><div class="exam-info"><span>姓名：'+STATE.nm+'</span><span id="timerDisplay">00:00</span><span>'+(idx+1)+' / '+total+'</span></div></div><div class="progress-bar"><div class="progress" style="width:'+pct+'%"></div></div><div class="question-card"><span class="question-number">'+(idx+1)+'</span><span class="question-text">'+q.q+'</span></div><div class="options">'+optsHtml+'</div><div class="exam-actions"><button type="button" onclick="prevQuestion()" class="btn btn-secondary"'+prevDisabled+'>← 上一题</button>'+nextBtn+'</div></div><div style="text-align:center;margin-top:20px"><div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap">'+navBtns+'</div></div></div>';
 }
-window.selO=function(i){S.an[S.ci]=i;var ops=document.querySelectorAll('.op');
-  for(var j=0;j<ops.length;j++)ops[j].className='op'+(j===i?' sel':'')};
-window.pvQ=function(){if(S.ci>0){S.ci--;rQ()}};
-window.nxQ=function(){if(S.ci<S.eq.length-1){S.ci++;rQ()}};
-window.goQ=function(i){S.ci=i;rQ()};
 
-/* 提交 */
-window.subE=function(){
-  var ua=0;for(var i=0;i<S.eq.length;i++)if(S.an[i]===undefined)ua++;
+window.selectOption=function(i){STATE.an[STATE.ci]=i;var ops=document.querySelectorAll('.option');for(var j=0;j<ops.length;j++)ops[j].className='option'+(j===i?' selected':'');};
+window.prevQuestion=function(){if(STATE.ci>0){STATE.ci--;renderQuestion()}};
+window.nextQuestion=function(){if(STATE.ci<STATE.eq.length-1){STATE.ci++;renderQuestion()}};
+window.goQuestion=function(i){STATE.ci=i;renderQuestion()};
+
+window.submitExam=function(){
+  var ua=0;for(var i=0;i<STATE.eq.length;i++)if(STATE.an[i]===undefined)ua++;
   if(ua>0&&!confirm('还有'+ua+'道题未作答，确定提交吗？'))return;
-  ct();var cr=0,res=[];
-  for(var j=0;j<S.eq.length;j++){var q=S.eq[j],u=S.an[j],ok=(u===q.n);if(ok)cr++;
-    res.push({q:q.q,a:q.a,n:q.n,e:e,module:q.m,ua:u,ok:ok});}
-  var sc=cr*C.p,ps=(sc>=C.s),el=Math.floor((new Date()-S.st)/1000);
-  S.rec.unshift({nm:S.nm,sc:sc,tt:C.n*C.p,cr:cr,tq:C.n,ps:ps,
-    tm:Math.floor(el/60)+'分'+(el%60)+'秒',dt:new Date().toLocaleString('zh-CN')});
-  if(S.rec.length>200)S.rec=S.rec.slice(0,200);sv();
-  rR(sc,cr,S.eq.length,ps,res);
+  stopTimer();var correct=0,results=[];
+  for(var j=0;j<STATE.eq.length;j++){var q=STATE.eq[j],u=STATE.an[j],ok=(u===q.n);if(ok)correct++;results.push({q:q.q,a:q.a,n:q.n,e:q.e,m:q.m,u:u,ok:ok});}
+  var score=correct*CONFIG.p,passed=(score>=CONFIG.s),elapsed=Math.floor((new Date()-STATE.st)/1000);
+  STATE.rec.unshift({nm:STATE.nm,sc:score,tt:CONFIG.n*CONFIG.p,correct:correct,tq:CONFIG.n,passed:passed,tm:Math.floor(elapsed/60)+'分'+(elapsed%60)+'秒',dt:new Date().toLocaleString('zh-CN')});
+  if(STATE.rec.length>200)STATE.rec=STATE.rec.slice(0,200);saveData();showResult(score,correct,STATE.eq.length,passed,results);
 };
 
-/* 成绩页 */
-function rR(sc,cr,tl,ps,res){
-  var ac=Math.round((cr/tl)*100),wc=tl-cr;
-  E('app').innerHTML=
-    '<style>'+CSS+'</style>'+
-    '<div class="container"><div class="card rc">'+
-      '<h1>'+C.t+'</h1><p style="color:#666">'+S.nm+' 的考试成绩</p>'+
-      '<div class="sb '+(ps?'ok':'ng')+'">'+sc+' 分</div>'+
-      '<div style="font-size:20px;margin-bottom:10px;color:'+(ps?'#52c41a':'#ff4d4f')+'">'+(ps?'🎉 恭喜及格！':'😢 未及格，继续加油！')+'</div>'+
-      '<div class="sd"><div><div class="nu">'+cr+'</div><div class="label">答对</div></div><div><div class="nu">'+wc+'</div><div class="label">答错</div></div><div><div class="nu">'+ac+'%</div><div class="label">正确率</div></div></div>'+
-      '<button type="button" onclick="shRev()" class="btn btn-p" style="margin-top:15px">查看错题解析</button><br>'+
-      '<button type="button" onclick="reSt()" class="btn btn-sec" style="margin-top:15px">重新考试</button>'+
-      '<div style="margin-top:20px"><a href="?mode=admin" class="btn btn-sec" style="font-size:14px">🔧 后台管理</a></div>'+
-    '</div></div>';
-  window._lr=res;
+function showResult(score,correct,total,passed,results){
+  var acc=Math.round((correct/total)*100),wrong=total-correct;
+  $('app').innerHTML='<div class="container"><div class="card result-card"><h1>'+CONFIG.t+'</h1><p style="color:#666">'+STATE.nm+' 的考试成绩</p><div class="score-big '+(passed?'pass':'fail')+'">'+score+' 分</div><div style="font-size:20px;margin-bottom:10px;color:'+(passed?'#52c41a':'#ff4d4f')+'">'+(passed?'🎉 恭喜及格！':'😢 未及格，继续加油！')+'</div><div class="score-detail"><div><div class="num">'+correct+'</div><div class="label">答对题数</div></div><div><div class="num">'+wrong+'</div><div class="label">答错题数</div></div><div><div class="num">'+acc+'%</div><div class="label">正确率</div></div></div><button type="button" onclick="showReview()" class="btn btn-primary" style="margin-top:15px">查看错题解析</button><br><button type="button" onclick="restartExam()" class="btn btn-secondary" style="margin-top:15px">重新考试</button><div style="margin-top:20px"><a href="?mode=admin" class="btn btn-secondary" style="font-size:14px">🔧 后台管理</a></div></div></div>';
+  window.lastResults=results;
 }
-window.shRev=function(){
-  var res=window._lr||[],wg=[];
-  for(var i=0;i<res.length;i++)if(!res[i].ok)wg.push(res[i]);
+
+window.showReview=function(){
+  var results=window.lastResults||[],wrong=[];
+  for(var i=0;i<results.length;i++)if(!results[i].ok)wrong.push(results[i]);
   var html='';
-  if(wg.length===0)html='<p style="text-align:center;color:#52c41a;font-size:18px;padding:40px">🎉 全部答对！</p>';
-  else{
-    for(var w=0;w<wg.length;w++){
-      var it=wg[w],oh='';
-      for(var o=0;o<it.a.length;o++){var L=String.fromCharCode(65+o),bg='#f5f5f5';
-        if(o===it.n)bg='#f6ffed;border:1px solid #b7eb8f';
-        else if(o===it.ua&&o!==it.n)bg='#fff2f0;border:1px solid #ffccc7';
-        oh+='<div style="padding:8px 12px;margin:4px 0;border-radius:6px;background:'+bg+'"><strong>'+L+'.</strong> '+it.a[o]+
-          (o===it.n?' ✓ 正确':'')+(o===it.ua&&o!==it.n?' ✗ 您的答':'')+'</div>';}
-      html+='<div class="qc" style="margin-bottom:20px;border-left:4px solid #ff4d4f">'+
-        '<div style="margin-bottom:15px"><span class="bdg bdg-m">'+mn(it.module)+'</span><span style="color:#ff4d4f;font-weight:bold;margin-left:10px">✗ 错误</span></div>'+
-        '<h3 style="margin-bottom:12px">'+it.q+'</div>'+oh+
-        '<div style="background:#fffbe6;padding:12px;border-radius:8px;border:1px solid #ffe58f;margin-top:12px"><strong>解析：</strong>'+it.e+'</div></div>';
-    }
-  }
-  E('app').innerHTML='<style>'+CSS+'</style><div class="container"><div class="card"><div class="ah"><h2>错题解析（共'+wg.length+'题）</h2><button type="button" onclick="bkRes()" class="btn btn-sec">← 返回成绩</button></div>'+html+'</div></div>';
+  if(wrong.length===0)html='<p style="text-align:center;color:#52c41a;font-size:18px;padding:40px">🎉 太棒了，全部答对！</p>';
+  else{for(var w=0;w<wrong.length;w++){var it=wrong[w],oh='';for(var o=0;o<it.a.length;o++){var L=String.fromCharCode(65+o),bg='#f5f5f5';if(o===it.n)bg='#f6ffed;border:1px solid #b7eb8f;';else if(o===it.u&&o!==it.n)bg='#fff2f0;border:1px solid #ffccc7;';oh+='<div style="padding:8px 12px;margin:4px 0;border-radius:6px;background:'+bg+'"><strong>'+L+'.</strong> '+it.a[o]+(o===it.n?' ✓ 正确答案':'')+(o===it.u&&o!==it.n?' ✗ 您的答案':'')+'</div>';}html+='<div class="question-card" style="margin-bottom:20px;border-left:4px solid #ff4d4f"><div style="margin-bottom:15px"><span class="badge">'+getModule(it.m)+'</span><span style="color:#ff4d4f;font-weight:bold;margin-left:10px">✗ 错误</span></div><h3 style="margin-bottom:12px">'+it.q+'</h3>'+oh+'<div style="background:#fffbe6;padding:12px;border-radius:8px;border:1px solid #ffe58f;margin-top:12px"><strong>解析：</strong>'+it.e+'</div></div>';}}
+  $('app').innerHTML='<div class="container"><div class="card"><div class="admin-header"><h2>错题解析（共'+wrong.length+'题）</h2><button type="button" onclick="backToResult()" class="btn btn-secondary">← 返回成绩</button></div>'+html+'</div></div>';
 };
-window.bkRes=function(){var res=window._lr||[];var cr=0;for(var i=0;i<res.length;i++)if(res[i].ok)cr++;rR(cr*C.p,cr,res.length,(cr*C.p)>=C.s,res)};
-window.reSt=function(){S.nm='';S.an={};S.eq=[];S.ci=0;sp()};
 
-/* 计时器 */
-function tr(){ct();S.timer=setInterval(uTm,1000)}
-function ct(){if(S.timer){clearInterval(S.timer);S.timer=null}}
-function uTm(){if(!S.st)return;var el=E('tm');if(!el)return;var d=Math.floor((new Date()-S.st)/1000);el.textContent=String(Math.floor(d/60)).padStart(2,'0')+':'+String(d%60).padStart(2,'0')}
+window.backToResult=function(){var results=window.lastResults||[],correct=0;for(var i=0;i<results.length;i++)if(results[i].ok)correct++;showResult(correct*CONFIG.p,correct,results.length,(correct*CONFIG.p)>=CONFIG.s,results);};
+window.restartExam=function(){STATE.nm='';STATE.an={};STATE.eq=[];STATE.ci=0;showStart();};
 
-/* 后台登录 */
-function cA(){try{if(sessionStorage.getItem('sal')==='1'){sAP();return}}catch(e){}
-  sAL();}
-function sAL(){
-  E('app').innerHTML='<style>'+CSS+'</style><div class="container"><div class="card" style="max-width:400px;margin:80px auto"><h1>🔧 考试后台管理</h1><div class="fg"><label>用户名</label><input type="text" id="au" value="admin"></div><div class="fg"><label>密码</label><input type="password" id="ap" placeholder="请输入密码"></div><button type="button" onclick="doAL()" class="btn btn-p" style="width:100%">登录</button><p style="text-align:center;margin-top:20px;color:#999;font-size:14px">默认账号：admin<br>默认密码：aqw2024scm</p><div style="text-align:center;margin-top:20px"><a href="?" class="btn btn-sec" style="font-size:14px">← 返回考试</a></div></div></div>';
-  setTimeout(function(){var x=E('ap');if(x)x.focus()},100);
-}
-window.doAL=function(){
-  var u=(E('au')||{}).value||'',p=(E('ap')||{}).value||'';
-  if(u==='admin'&&p===C.pw){try{sessionStorage.setItem('sal','1')}catch(e){}sAP()}
-  else{tk('用户名或密码错误','err')}
-};
-window.doLOut=function(){try{sessionStorage.removeItem('sal')}catch(e){}sAL();tk('已退出')};
+function startTimer(){stopTimer();STATE.timer=setInterval(updateTimer,1000);}
+function stopTimer(){if(STATE.timer){clearInterval(STATE.timer);STATE.timer=null;}}
+function updateTimer(){if(!STATE.st)return;var el=$('timerDisplay');if(!el)return;var d=Math.floor((new Date()-STATE.st)/1000);el.textContent=String(Math.floor(d/60)).padStart(2,'0')+':'+String(d%60).padStart(2,'0');}
 
-/* 后台面板 */
-function sAP(){
+function checkAdmin(){try{if(sessionStorage.getItem('sal')==='1'){showAdmin();return}}catch(e){}showAdminLogin();}
+function showAdminLogin(){$('app').innerHTML='<div class="container"><div class="card" style="max-width:400px;margin:80px auto"><h1>🔧 考试后台管理</h1><div class="form-group"><label>用户名</label><input type="text" id="adminUser" value="admin"></div><div class="form-group"><label>密码</label><input type="password" id="adminPwd" placeholder="请输入密码"></div><button type="button" onclick="doAdminLogin()" class="btn btn-primary" style="width:100%">登录</button><p style="text-align:center;margin-top:20px;color:#999;font-size:14px">默认账号：admin<br>默认密码：aqw2024scm</p><div style="text-align:center;margin-top:20px"><a href="?" class="btn btn-secondary" style="font-size:14px">← 返回考试</a></div></div></div>';setTimeout(function(){var x=$('adminPwd');if(x)x.focus()},100);}
+window.doAdminLogin=function(){var u=($('adminUser')||{}).value||'',p=($('adminPwd')||{}).value||'';if(u==='admin'&&p===CONFIG.pw){try{sessionStorage.setItem('sal','1')}catch(e){}showAdmin();}else{toast('用户名或密码错误','error');}};
+window.doLogout=function(){try{sessionStorage.removeItem('sal')}catch(e){}showAdminLogin();toast('已退出登录');};
+
+function showAdmin(){
   var tc='';
-  if(S.tab==='q')tc=rQT();
-  else if(S.tab==='r')tc=rRT();
-  else tc=rST();
+  if(STATE.tab==='q')tc=renderQuestionsTab();
+  else if(STATE.tab==='r')tc=renderRecordsTab();
+  else tc=renderStatsTab();
+  $('app').innerHTML='<div class="container"><div class="card"><div class="admin-header"><h2>📚 考试后台管理</h2><div><button type="button" onclick="showSettings()" class="btn btn-secondary">⚙️ 设置</button><button type="button" onclick="doLogout()" class="btn btn-secondary" style="margin-left:8px">退出</button><a href="?" class="btn btn-primary" style="margin-left:8px">← 考试</a></div></div><div class="admin-tabs"><button type="button" onclick="switchTab(\'q\')" class="tab-btn'+(STATE.tab==='q'?' active':'')+'">📝 题库管理</button><button type="button" onclick="switchTab(\'r\')" class="tab-btn'+(STATE.tab==='r'?' active':'')+'">📊 考试记录</button><button type="button" onclick="switchTab(\'s\')" class="tab-btn'+(STATE.tab==='s'?' active':'')+'">📈 数据统计</button></div><div id="tabContent">'+tc+'</div></div><div class="modal" id="qModal"><div class="modal-content"><div class="modal-header"><h2 id="modalTitle">添加题目</h2><button type="button" onclick="closeModal()" class="modal-close">×</button></div><form onsubmit="return false"><input type="hidden" id="editId"><div class="form-group"><label>题目内容</label><textarea id="editQ" rows="3"></textarea></div><div class="form-group"><label>所属模块</label><select id="editM"><option value="1">APP下载与登录</option><option value="2">门店订货操作</option><option value="3">采购入库/退货</option><option value="4">配送入库/退配</option><option value="5">委托收货/退回</option><option value="6">库存报损/报溢</option><option value="7">库存查询与盘点</option><option value="8">调拨与领用</option></select></div><div class="form-group"><label>选项 A</label><input type="text" id="editA0"></div><div class="form-group"><label>选项 B</label><input type="text" id="editA1"></div><div class="form-group"><label>选项 C</label><input type="text" id="editA2"></div><div class="form-group"><label>正确答案</label><select id="editAns"><option value="0">A</option><option value="1">B</option><option value="2">C</option></select></div><div class="form-group"><label>解析</label><textarea id="editExp" rows="2"></textarea></div><div style="display:flex;gap:10px;margin-top:20px"><button type="button" onclick="saveQuestion()" class="btn btn-primary" style="flex:1">保存</button><button type="button" onclick="closeModal()" class="btn btn-secondary">取消</button></div></form></div></div></div>';
+}
 
-  E('app').innerHTML=
-    '<style>'+CSS+'</style>'+
-    '<div class="container"><div class="card">'+
-      '<div class="ah"><h2>📚 考试后台管理</h2><div>'+
-        '<button type="button" onclick="sSet()" class="btn btn-sec">⚙️ 设置</button>'+
-        '<button type="button" onclick="doLOut()" class="btn btn-sec" style="margin-left:8px">退出</button>'+
-        '<a href="?" class="btn btn-p" style="margin-left:8px">← 考试</a></div></div>'+
-      '<div class="at">'+
-        '<button type="button" onclick="swT(\'q\')" class="tb'+(S.tab==='q'?' on':'')+'">📝 题库管理</button>'+
-        '<button type="button" onclick="swT(\'r\')" class="tb'+(S.tab==='r'?' on':'')+'">📊 考试记录</button>'+
-        '<button type="button" onclick="swT(\'s\')" class="tb'+(S.tab==='s'?' on':'')+'">📈 数据统计</button>'+
-      '</div><div id="tcArea">'+tc+'</div>'+
-    '</div>'+
-    /* 弹窗 */
-    '<div class="md" id="qMd"><div class="mc"><div class="mh"><h2 id="mt">添加题目</h2><button type="button" onclick="clM()" class="clb">×</button></div>'+
-      '<form onsubmit="return false"><input type="hidden" id="eid">'+
-      '<div class="fg"><label>题目内容</label><textarea id="eq" rows="3"></textarea></div>'+
-      '<div class="fg"><label>所属模块</label><select id="em"><option value="1">APP下载与登录</option><option value="2">门店订货操作</option><option value="3">采购入库/退货</option><option value="4">配送入库/退配</option><option value="5">委托收货/退回</option><option value="6">库存报损/报溢</option><option value="7">库存查询与盘点</option><option value="8">调拨与领用</option></select></div>'+
-      '<div class="fg"><label>选项 A</label><input type="text" id="ea0"></div>'+
-      '<div class="fg"><label>选项 B</label><input type="text" id="ea1"></div>'+
-      '<div class="fg"><label>选项 C</label><input type="text" id="ea2"></div>'+
-      '<div class="fg"><label>正确答案</label><select id="ean"><option value="0">A</option><option value="1">B</option><option value="2">C</option></select></div>'+
-      '<div class="fg"><label>解析</label><textarea id="ee" rows="2"></textarea></div>'+
-      '<div style="display:flex;gap:10px;margin-top:20px"><button type="button" onclick="svQ()" class="btn btn-p" style="flex:1">保存</button><button type="button" onclick="clM()" class="btn btn-sec">取消</button></div>'+
-    '</form></div></div></div>';
+window.switchTab=function(t){STATE.tab=t;showAdmin();};
+
+function renderQuestionsTab(){
+  return'<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap"><input type="text" placeholder="搜索题目..." class="form-group" style="flex:1;min-width:200px;margin:0" oninput="filterQuestions(this.value)" id="searchQ"><select id="filterM" onchange="filterQuestions(($(\'searchQ\')||{}).value||\'\')" style="padding:12px;border:1px solid #e8e8e8;border-radius:8px"><option value="">全部模块</option><option value="1">APP下载与登录</option><option value="2">门店订货操作</option><option value="3">采购入库/退货</option><option value="4">配送入库/退配</option><option value="5">委托收货/退回</option><option value="6">库存报损/报溢</option><option value="7">库存查询与盘点</option><option value="8">调拨与领用</option></select><button type="button" onclick="addQuestion()" class="btn btn-primary">+ 添加</button><button type="button" onclick="importQuestions()" class="btn btn-secondary">📥 导入</button><button type="button" onclick="exportQuestions()" class="btn btn-secondary">📤 导出</button></div><p style="color:#666;margin-bottom:15px">共 '+STATE.qs.length+' 道题目</p><div id="qList">'+renderQuestionsTable(STATE.qs)+'</div>';
 }
-window.swT=function(t){S.tab=t;sAP()};
-function rQT(){
-  return'<div class="tb2"><input type="text" placeholder="搜索题目..." class="se" oninput="fQ(this.value)" id="sqIn">'+
-    '<select id="fmSel" onchange="fQ((E(\'sqIn\')||{}).value||\'\')"><option value="">全部模块</option><option value="1">APP下载与登录</option><option value="2">门店订货操作</option><option value="3">采购入库/退货</option><option value="4">配送入库/退配</option><option value="5">委托收货/退回</option><option value="6">库存报损/报溢</option><option value="7">库存查询与盘点</option><option value="8">调拨与领用</option></select>'+
-    '<button type="button" onclick="addQ()" class="btn btn-p">+ 添加</button>'+
-    '<button type="button" onclick="impQ()" class="btn btn-sec">📥 导入</button>'+
-    '<button type="button" onclick="expQ()" class="btn btn-sec">📤 导出</button></div>'+
-    '<p style="color:#666;margin-bottom:15px">共 '+S.qs.length+' 道题目</p><div id="qL">'+rQTbl(S.qs)+'</div>';
-}
-function rQTbl(qs){
-  if(!qs||qs.length===0)return'<div class="mt">📝 暂无题目</div>';
-  var h='<table class="tbl"><thead><tr><th style="width:60px">ID</th><th>题目</th><th style="width:120px">模块</th><th style="width:100px">操作</th></tr></thead><tbody>';
-  for(var i=0;i<qs.length;i++){
-    var qi=qs[i];
-    h+='<tr><td>'+qi.id+'</td><td style="max-width:400px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+qi.q+'</td><td><span class="bdg bdg-m">'+mn(qi.m)+'</span></td><td><button type="button" onclick="edQ('+qi.id+')" class="btn btn-sec" style="padding:4px 8px;font-size:12px">编辑</button><button type="button" onclick="dlQ('+qi.id+')" class="btn btn-d" style="padding:4px 8px;font-size:12px">删除</button></td></tr>';
-  }
+
+function renderQuestionsTable(qs){
+  if(!qs||qs.length===0)return'<div class="empty">📝 暂无题目</div>';
+  var h='<table class="table"><thead><tr><th style="width:60px">ID</th><th>题目</th><th style="width:120px">模块</th><th style="width:100px">操作</th></tr></thead><tbody>';
+  for(var i=0;i<qs.length;i++){var q=qs[i];h+='<tr><td>'+q.id+'</td><td style="max-width:400px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+q.q+'</td><td><span class="badge">'+getModule(q.m)+'</span></td><td><button type="button" onclick="editQuestion('+q.id+')" class="btn btn-secondary" style="padding:4px 8px;font-size:12px">编辑</button><button type="button" onclick="deleteQuestion('+q.id+')" class="btn btn-danger" style="padding:4px 8px;font-size:12px;margin-left:5px">删除</button></td></tr>';}
   return h+'</tbody></table>';
 }
-window.fQ=function(s){
-  var m=(E('fmSel')||{}).value||'',f=S.qs;
-  if(s){var t=s.toLowerCase();f=f.filter(function(q){return q.q.toLowerCase().indexOf(t)!==-1||q.a.some(function(o){return o.toLowerCase().indexOf(t)!==-1)})}}
-  if(m)f=f.filter(function(q){return q.m===parseInt(m)});
-  var el=E('qL');if(el)el.innerHTML=rQTbl(f);
-};
-window.addQ=function(){E('mt').textContent='添加题目';var f=document.querySelector('#qMd form');if(f)f.reset();E('eid').value='';opM()};
-window.edQ=function(id){
-  var qi=null;for(var i=0;i<S.qs.length;i++){if(S.qs[i].id===id){qi=S.qs[i];break}}if(!qi)return;
-  E('mt').textContent='编辑题目';E('eid').value=id;E('eq').value=qi.q;E('em').value=qi.m;E('ea0').value=qi.a[0]||'';E('ea1').value=qi.a[1]||'';E('ea2').value=qi.a[2]||'';E('ean').value=qi.n;E('ee').value=qi.e||'';opM()
-};
-window.svQ=function(){
-  var id=(E('eid')||{}).value||'',d={q:(E('eq')||{}).value.trim(),m:parseInt((E('em')||{}).value),a:[(E('ea0')||{}).value.trim(),(E('ea1')||{}).value.trim(),(E('ea2')||{}).value.trim()],n:parseInt((E('ean')||{}).value),e:(E('ee')||{}).value.trim()};
-  if(id){
-    var idx=-1;for(var i=0;i<S.qs.length;i++){if(S.qs[i].id===parseInt(id)){idx=i;break}}
-    if(idx!==-1){for(var k in d)if(d[k]!==undefined)S.qs[idx][k]=d[k]}
-  }else{
-    var mx=0;for(var j=0;j<S.qs.length;j++)if(S.qs[j].id>mx)mx=S.qs[j].id;
-    S.qs.push({id:mx+1,m:d.m,q:d.q,a:d.a,n:d.n,e:d.e})
-  }
-  sv();clM();sAP();tk('保存成功！','ok')
-};
-window.dlQ=function(id){if(!confirm('确定删除？'))return;var idx=-1;for(var i=0;i<S.qs.length;i++){if(S.qs[i].id===id){idx=i;break}}if(idx!==-1){S.qs.splice(idx,1);sv();sAP();tk('已删除')}};
-window.impQ=function(){
-  var ip=document.createElement('input');ip.type='file';ip.accept='.json';
-  ip.onchange=function(ev){
-    var f=ev.target.files[0];if(!f)return;
-    var r=new FileReader();
-    r.onload=function(ev2){
-      try{
-        var d=JSON.parse(ev2.target.result),imp=d.questions||d;
-        if(Array.isArray(imp)){
-          var ids=S.qs.map(function(x){return x.id}),mx=Math.max.apply(null,[0].concat(ids));
-          for(var i=0;i<imp.length;i++){if(ids.indexOf(imp[i].id)===-1){imp[i].id=++mx;S.qs.push(imp[i])}}
-          sv();sAP();tk('导入'+imp.length+'道成功！','ok')
-        }else{tk('格式错误','err')}
-      }catch(err){tk('解析失败','err')}
-    };r.readAsText(f)
-  };ip.click()
-};
-window.expQ=function(){
-  var d={version:'3.0',lastUpdated:new Date().toISOString().split('T')[0],questions:S.qs,settings:{title:C.t,total:C.n,passScore:C.s,perQuestionScore:C.p}};
-  var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');
-  a.href=u;a.download='questions.json';a.click();URL.revokeObjectURL(u);tk('已导出','ok')
+
+window.filterQuestions=function(s){
+  var m=($('filterM')||{}).value||'',f=STATE.qs;
+  if(s){var t=s.toLowerCase();f=f.filter(function(q){return q.q.toLowerCase().indexOf(t)!==-1||q.a.some(function(o){return o.toLowerCase().indexOf(t)!==-1;});});}
+  if(m)f=f.filter(function(q){return q.m===parseInt(m);});
+  var el=$('qList');if(el)el.innerHTML=renderQuestionsTable(f);
 };
 
-/* 记录Tab */
-function rRT(){
-  if(!S.rec||S.rec.length===0)return'<div class="mt">📋 暂无考试记录</div>';
-  var h='<div class="tb2"><button type="button" onclick="expR()" class="btn btn-sec">📤 导出记录</button><button type="button" onclick="clR()" class="btn btn-d">🗑️ 清空</button></div><p style="color:#666;margin-bottom:15px">共'+S.rec.length+'条记录</p><table class="tbl"><thead><tr><th>姓名</th><th>分数</th><th>正确</th><th>用时</th><th>时间</th><th>状态</th></tr></thead><tbody>';
-  for(var i=0;i<S.rec.length;i++){var r=S.rec[i];
-    h+='<tr><td>'+r.nm+'</td><td><strong>'+r.sc+'</strong> / '+r.tt+'</td><td>'+r.cr+' / '+r.tq+'</td><td>'+r.tm+'</td><td>'+r.dt+'</td><td><span class="bdg" style="background:'+(r.ps?'#f6ffed;color:#52c41a':'#fff2f0;color:#ff4d4f')+';padding:4px 8px">'+(r.ps?'✓ 及格':'✗ 不及格')+'</span></td></tr>';
-  }
+window.addQuestion=function(){$('modalTitle').textContent='添加题目';var f=document.querySelector('#qModal form');if(f)f.reset();$('editId').value='';openModal();};
+window.editQuestion=function(id){var qi=null;for(var i=0;i<STATE.qs.length;i++){if(STATE.qs[i].id===id){qi=STATE.qs[i];break}}if(!qi)return;$('modalTitle').textContent='编辑题目';$('editId').value=id;$('editQ').value=qi.q;$('editM').value=qi.m;$('editA0').value=qi.a[0]||'';$('editA1').value=qi.a[1]||'';$('editA2').value=qi.a[2]||'';$('editAns').value=qi.n;$('editExp').value=qi.e||'';openModal();};
+window.saveQuestion=function(){var id=($('editId')||{}).value||'',d={q:($('editQ')||{}).value.trim(),m:parseInt(($('editM')||{}).value),a:[($('editA0')||{}).value.trim(),($('editA1')||{}).value.trim(),($('editA2')||{}).value.trim()],n:parseInt(($('editAns')||{}).value),e:($('editExp')||{}).value.trim()};if(id){var idx=-1;for(var i=0;i<STATE.qs.length;i++){if(STATE.qs[i].id===parseInt(id)){idx=i;break}}if(idx!==-1){for(var k in d)if(d[k]!==undefined)STATE.qs[idx][k]=d[k];}}else{var mx=0;for(var j=0;j<STATE.qs.length;j++)if(STATE.qs[j].id>mx)mx=STATE.qs[j].id;STATE.qs.push({id:mx+1,m:d.m,q:d.q,a:d.a,n:d.n,e:d.e});}saveData();closeModal();showAdmin();toast('保存成功！','success');};
+window.deleteQuestion=function(id){if(!confirm('确定删除这道题吗？'))return;var idx=-1;for(var i=0;i<STATE.qs.length;i++){if(STATE.qs[i].id===id){idx=i;break}}if(idx!==-1){STATE.qs.splice(idx,1);saveData();showAdmin();toast('已删除');}};
+window.importQuestions=function(){var ip=document.createElement('input');ip.type='file';ip.accept='.json';ip.onchange=function(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev2){try{var d=JSON.parse(ev2.target.result),imp=d.questions||d;if(Array.isArray(imp)){var ids=STATE.qs.map(function(x){return x.id}),mx=Math.max.apply(null,[0].concat(ids));for(var i=0;i<imp.length;i++){if(ids.indexOf(imp[i].id)===-1){imp[i].id=++mx;STATE.qs.push(imp[i]);}}saveData();showAdmin();toast('成功导入 '+imp.length+' 道题目！','success');}else{toast('文件格式错误','error');}}catch(err){toast('解析失败：'+err.message,'error');}};r.readAsText(f);};ip.click();};
+window.exportQuestions=function(){var d={version:'4.0',lastUpdated:new Date().toISOString().split('T')[0],questions:STATE.qs,settings:{title:CONFIG.t,total:CONFIG.n,passScore:CONFIG.s,perQuestionScore:CONFIG.p}};var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='questions.json';a.click();URL.revokeObjectURL(u);toast('已导出题目','success');};
+
+function renderRecordsTab(){
+  if(!STATE.rec||STATE.rec.length===0)return'<div class="empty">📋 暂无考试记录</div>';
+  var h='<div style="margin-bottom:20px"><button type="button" onclick="exportRecords()" class="btn btn-secondary">📤 导出记录</button><button type="button" onclick="clearRecords()" class="btn btn-danger" style="margin-left:10px">🗑️ 清空</button></div><p style="color:#666;margin-bottom:15px">共 '+STATE.rec.length+' 条记录</p><table class="table"><thead><tr><th>姓名</th><th>分数</th><th>正确</th><th>用时</th><th>时间</th><th>状态</th></tr></thead><tbody>';
+  for(var i=0;i<STATE.rec.length;i++){var r=STATE.rec[i];h+='<tr><td>'+r.nm+'</td><td><strong>'+r.sc+'</strong> / '+r.tt+'</td><td>'+r.correct+' / '+r.tq+'</td><td>'+r.tm+'</td><td>'+r.dt+'</td><td><span class="badge" style="background:'+(r.passed?'#f6ffed;color:#52c41a':'#fff2f0;color:#ff4d4f')+';padding:4px 8px">'+(r.passed?'✓ 及格':'✗ 不及格')+'</span></td></tr>';}
   return h+'</tbody></table>';
 }
-window.expR=function(){
-  var rows=[['姓名','分数','总分','正确','总题','用时','时间','状态'].join(',')];
-  for(var i=0;i<S.rec.length;i++){var r=S.rec[i];rows.push([r.nm,r.sc,r.tt,r.cr,r.tq,r.tm,r.dt,r.ps?'及格':'不及格'].join(','))}
-  var b=new Blob(['\ufeff'+rows.join('\n')],{type:'text/csv;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');
-  a.href=u;a.download='考试记录_'+new Date().toLocaleDateString('zh-CN').replace(/\//g,'-')+'.csv';a.click();URL.revokeObjectURL(u);tk('已导出','ok')
-};
-window.clR=function(){if(!confirm('确定清空所有记录？'))return;S.rec=[];sv();sAP();tk('已清空')};
 
-/* 统计Tab */
-function rST(){
-  var tr=S.rec.length,pc=S.rec.filter(function(r){return r.ps}).length,pr=tr>0?Math.round((pc/tr)*100):0,av=tr>0?Math.round(S.rec.reduce(function(s,r){return s+r.sc},0)/tr):0;
-  var ms={};for(var i=1;i<=8;i++)ms[i]=0;
-  for(var j=0;j<S.qs.length;j++){var mi=S.qs[j].m;if(ms[mi]!==undefined)ms[mi]++}
-  var sg='<div class="sg"><div class="sc"><div class="nu">'+tr+'</div><div class="lb">考试人次</div></div><div class="sc gr"><div class="nu">'+pr+'%</div><div class="lb">及格率</div></div><div class="sc or"><div class="nu">'+av+'</div><div class="lb">平均分</div></div><div class="sc"><div class="nu">'+S.qs.length+'</div><div class="lb">题库总量</div></div></div>';
+window.exportRecords=function(){var rows=[['姓名','分数','总分','正确','总题','用时','时间','状态'].join(',')];for(var i=0;i<STATE.rec.length;i++){var r=STATE.rec[i];rows.push([r.nm,r.sc,r.tt,r.correct,r.tq,r.tm,r.dt,r.passed?'及格':'不及格'].join(','));}var b=new Blob(['\ufeff'+rows.join('\n')],{type:'text/csv;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='考试记录_'+new Date().toLocaleDateString('zh-CN').replace(/\//g,'-')+'.csv';a.click();URL.revokeObjectURL(u);toast('已导出记录','success');};
+window.clearRecords=function(){if(!confirm('确定清空所有考试记录？此操作不可恢复！'))return;STATE.rec=[];saveData();showAdmin();toast('记录已清空');};
+
+function renderStatsTab(){
+  var tr=STATE.rec.length,pc=STATE.rec.filter(function(r){return r.passed}).length,pr=tr>0?Math.round((pc/tr)*100):0,av=tr>0?Math.round(STATE.rec.reduce(function(s,r){return s+r.sc},0)/tr):0;
+  var ms={};for(var i=1;i<=8;i++)ms[i]=0;for(var j=0;j<STATE.qs.length;j++){var mi=STATE.qs[j].m;if(ms[mi]!==undefined)ms[mi]++;}
+  var sg='<div class="stats-grid"><div class="stat-card"><div class="num">'+tr+'</div><div class="label">考试人次</div></div><div class="stat-card green"><div class="num">'+pr+'%</div><div class="label">及格率</div></div><div class="stat-card orange"><div class="num">'+av+'</div><div class="label">平均分</div></div><div class="stat-card"><div class="num">'+STATE.qs.length+'</div><div class="label">题库总量</div></div></div>';
   var mh='<h3 style="margin:30px 0 15px">各模块题目分布</h3><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px">';
-  var mk=Object.entries(ms);
-  for(var k=0;k<mk.length;k++){mh+='<div style="background:#f5f5f5;padding:15px;border-radius:8px;display:flex;justify-content:space-between;align-items:center"><span>'+mn(parseInt(mk[k][0]))+'</span><span style="background:#1890ff;color:#fff;padding:4px 12px;border-radius:12px;font-weight:bold">'+mk[k][1]+'题</span></div>'}
-  mh+='</div>';
-  var ch='';
-  if(tr>0){
-    ch='<h3 style="margin:30px 0 15px">最近趋势</h3><div style="background:#fafafa;padding:20px;border-radius:8px"><p style="color:#666">最近10次：</p><div style="display:flex;gap:8px;margin-top:15px;align-items:flex-end;height:100px">';
-    var sl=S.rec.slice(0,10).reverse();
-    for(var si=0;si<sl.length;si++){
-      var ri=sl[si],hh=(ri.sc/100)*80+20,c=ri.ps?'#52c41a':'#ff4d4f';
-      ch+='<div style="flex:1;background:'+c+';height:'+hh+'px;border-radius:4px 4px 0 0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:5px;font-size:12px;color:#fff;font-weight:bold" title="'+ri.nm+':'+ri.sc+'分">'+ri.sc+'</div>';
-    }
-    ch+='</div></div>';
-  }
+  var mk=Object.entries(ms);for(var k=0;k<mk.length;k++){mh+='<div style="background:#f5f5f5;padding:15px;border-radius:8px;display:flex;justify-content:space-between;align-items:center"><span>'+getModule(parseInt(mk[k][0]))+'</span><span style="background:#1890ff;color:#fff;padding:4px 12px;border-radius:12px;font-weight:bold">'+mk[k][1]+'题</span></div>';}mh+='</div>';
+  var ch='';if(tr>0){ch='<h3 style="margin:30px 0 15px">最近趋势</h3><div style="background:#fafafa;padding:20px;border-radius:8px"><p style="color:#666">最近10次考试分数：</p><div style="display:flex;gap:8px;margin-top:15px;align-items:flex-end;height:100px">';var sl=STATE.rec.slice(0,10).reverse();for(var si=0;si<sl.length;si++){var ri=sl[si],hh=(ri.sc/100)*80+20,c=ri.passed?'#52c41a':'#ff4d4f';ch+='<div style="flex:1;background:'+c+';height:'+hh+'px;border-radius:4px 4px 0 0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:5px;font-size:12px;color:#fff;font-weight:bold" title="'+ri.nm+':'+ri.sc+'分">'+ri.sc+'</div>';}ch+='</div></div>';}
   return sg+mh+ch;
 }
 
-/* 设置 */
-window.sSet=function(){
-  E('app').innerHTML='<style>'+CSS+'</style><div class="container"><div class="card" style="max-width:600px;margin:50px auto"><div class="ah"><h2>⚙️ 考试设置</h2><button type="button" onclick="sAP()" class="btn btn-sec">返回</button></div>'+
-    '<form onsubmit="return false"><div class="fg"><label>考试标题</label><input type="text" id="ssT" value="'+C.t+'"></div>'+
-    '<div class="fg"><label>题目数量</label><input type="number" id="ssN" value="'+C.n+'" min="1" max="100"></div>'+
-    '<div class="fg"><label>每题分值</label><input type="number" id="ssP" value="'+C.p+'" min="1"></div>'+
-    '<div class="fg"><label>及格分数</label><input type="number" id="ssS" value="'+C.s+'" min="1"></div>'+
-    '<button type="button" onclick="svSet()" class="btn btn-p">保存设置</button></form>'+
-    '<div style="margin-top:30px;padding-top:30px;border-top:1px solid #e8e8e8"><h3 style="margin-bottom:15px">🔐 修改密码</h3>'+
-    '<form onsubmit="return false"><div class="fg"><label>当前密码</label><input type="password" id="soP" required></div>'+
-    '<div class="fg"><label>新密码</label><input type="password" id="snP" required></div>'+
-    '<div class="fg"><label>确认新密码</label><input type="password" id="scp" required></div>'+
-    '<button type="button" onclick="chgPwd()" class="btn btn-d">修改密码</button></form></div></div></div>'
-};
-window.svSet=function(){
-  C.t=(E('ssT')||{}).value||C.t;C.n=parseInt((E('ssN')||{}).value)||C.n;C.p=parseInt((E('ssP')||{}).value)||C.p;C.s=parseInt((E('ssS')||{}).value)||C.s;sv();tk('设置已保存','ok')
-};
-window.chgPwd=function(){
-  var op=(E('soP')||{}).value||'',np=(E('snP')||{}).value||'',cp=(E('scp')||{}).value||'';
-  if(op!==C.pw){tk('当前密码错误','err');return}
-  if(np!==cp){tk('两次不一致','err');return}
-  if(np.length<6){tk('至少6位','err');return}
-  C.pw=np;tk('密码已修改','ok');E('soP').value='';E('snP').value='';E('scp').value=''
-};
+window.showSettings=function(){$('app').innerHTML='<div class="container"><div class="card" style="max-width:600px;margin:50px auto"><div class="admin-header"><h2>⚙️ 考试设置</h2><button type="button" onclick="showAdmin()" class="btn btn-secondary">返回</button></div><form onsubmit="return false"><div class="form-group"><label>考试标题</label><input type="text" id="setTitle" value="'+CONFIG.t+'"></div><div class="form-group"><label>题目数量</label><input type="number" id="setNum" value="'+CONFIG.n+'" min="1" max="100"></div><div class="form-group"><label>每题分值</label><input type="number" id="setScore" value="'+CONFIG.p+'" min="1"></div><div class="form-group"><label>及格分数</label><input type="number" id="setPass" value="'+CONFIG.s+'" min="1"></div><button type="button" onclick="saveSettings()" class="btn btn-primary">保存设置</button></form><div style="margin-top:30px;padding-top:30px;border-top:1px solid #e8e8e8"><h3 style="margin-bottom:15px">🔐 修改密码</h3><form onsubmit="return false"><div class="form-group"><label>当前密码</label><input type="password" id="oldPwd" required></div><div class="form-group"><label>新密码</label><input type="password" id="newPwd" required></div><div class="form-group"><label>确认新密码</label><input type="password" id="confirmPwd" required></div><button type="button" onclick="changePassword()" class="btn btn-danger">修改密码</button></form></div></div></div>';};
+window.saveSettings=function(){CONFIG.t=($('setTitle')||{}).value||CONFIG.t;CONFIG.n=parseInt(($('setNum')||{}).value)||CONFIG.n;CONFIG.p=parseInt(($('setScore')||{}).value)||CONFIG.p;CONFIG.s=parseInt(($('setPass')||{}).value)||CONFIG.s;saveData();toast('设置已保存','success');};
+window.changePassword=function(){var op=($('oldPwd')||{}).value||'',np=($('newPwd')||{}).value||'',cp=($('confirmPwd')||{}).value||'';if(op!==CONFIG.pw){toast('当前密码错误','error');return;}if(np!==cp){toast('两次输入的新密码不一致','error');return;}if(np.length<6){toast('新密码至少6位','error');return;}CONFIG.pw=np;toast('密码已修改','success');$('oldPwd').value='';$('newPwd').value='';$('confirmPwd').value='';};
 
-/* 弹窗 */
-function opM(){var m=E('qMd');if(m)m.classList.add('show')}
-window.clM=function(){var m=E('qMd');if(m)m.classList.remove('show')};
+function openModal(){var m=$('qModal');if(m)m.classList.add('show');}
+window.closeModal=function(){var m=$('qModal');if(m)m.classList.remove('show');};
 
-/* 初始化 */
-ld();
-rt();
+loadData();
+route();
 })();
 </script>
 </body>
