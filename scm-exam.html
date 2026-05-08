@@ -144,7 +144,7 @@ var QUESTIONS = [
 {id:60,m:7,q:"盘点差异指什么？",a:["不是","导入库存与实际库存差值","预期差异"],n:1,e:"系统导入数与实际盘点数的差值"}
 ];
 
-var CONFIG = {t:'奥琦玮供应链随堂测试',n:20,p:5,s:80,pw:'aqw2024scm'};
+var CONFIG = {t:'奥琦玮供应链随堂测试',n:20,p:5,s:80,pw:'Nc123456'};
 var STATE = {qs:[],eq:[],ci:0,an:{},nm:'',st:null,timer:null,rec:[],tab:'q'};
 var MODULES = {1:'APP下载与登录',2:'门店订货操作',3:'采购入库/退货',4:'配送入库/退配',5:'委托收货/退回',6:'库存报损/报溢',7:'库存查询与盘点',8:'调拨与领用'};
 
@@ -219,8 +219,8 @@ function stopTimer(){if(STATE.timer){clearInterval(STATE.timer);STATE.timer=null
 function updateTimer(){if(!STATE.st)return;var el=$('timerDisplay');if(!el)return;var d=Math.floor((new Date()-STATE.st)/1000);el.textContent=String(Math.floor(d/60)).padStart(2,'0')+':'+String(d%60).padStart(2,'0');}
 
 function checkAdmin(){try{if(sessionStorage.getItem('sal')==='1'){showAdmin();return}}catch(e){}showAdminLogin();}
-function showAdminLogin(){$('app').innerHTML='<div class="container"><div class="card" style="max-width:400px;margin:80px auto"><h1>🔧 考试后台管理</h1><div class="form-group"><label>用户名</label><input type="text" id="adminUser" value="admin"></div><div class="form-group"><label>密码</label><input type="password" id="adminPwd" placeholder="请输入密码"></div><button type="button" onclick="doAdminLogin()" class="btn btn-primary" style="width:100%">登录</button><p style="text-align:center;margin-top:20px;color:#999;font-size:14px">默认账号：admin<br>默认密码：aqw2024scm</p><div style="text-align:center;margin-top:20px"><a href="?" class="btn btn-secondary" style="font-size:14px">← 返回考试</a></div></div></div>';setTimeout(function(){var x=$('adminPwd');if(x)x.focus()},100);}
-window.doAdminLogin=function(){var u=($('adminUser')||{}).value||'',p=($('adminPwd')||{}).value||'';if(u==='admin'&&p===CONFIG.pw){try{sessionStorage.setItem('sal','1')}catch(e){}showAdmin();}else{toast('用户名或密码错误','error');}};
+function showAdminLogin(){$('app').innerHTML='<div class="container"><div class="card" style="max-width:400px;margin:80px auto"><h1>🔧 考试后台管理</h1><div class="form-group"><input type="text" id="adminUser" placeholder="请输入账号"></div><div class="form-group"><input type="password" id="adminPwd" placeholder="请输入密码"></div><button type="button" onclick="doAdminLogin()" class="btn btn-primary" style="width:100%">登录</button><div style="text-align:center;margin-top:20px"><a href="?" class="btn btn-secondary" style="font-size:14px">← 返回考试</a></div></div></div>';setTimeout(function(){var x=$('adminPwd');if(x)x.focus()},100);}
+window.doAdminLogin=function(){var u=($('adminUser')||{}).value||'',p=($('adminPwd')||{}).value||'';if(p===CONFIG.pw){try{sessionStorage.setItem('sal','1')}catch(e){}showAdmin();}else{toast('密码错误','error');}};
 window.doLogout=function(){try{sessionStorage.removeItem('sal')}catch(e){}showAdminLogin();toast('已退出登录');};
 
 function showAdmin(){
