@@ -152,8 +152,8 @@ function $(id){return document.getElementById(id)}
 function shuffle(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
 function getModule(m){return MODULES[m]||'未知'}
 function toast(msg,type){type=type||'';var old=document.querySelector('.toast');if(old)old.parentNode.removeChild(old);var el=document.createElement('div');el.className='toast '+type;el.textContent=msg;document.body.appendChild(el);setTimeout(function(){el.className+=' show'},10);setTimeout(function(){el.className=el.className.replace(' show','');setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el)},300)},2500)}
-function loadData(){try{var s=localStorage.getItem('sq_v4');if(s)STATE.qs=JSON.parse(s);else STATE.qs=QUESTIONS.slice();STATE.rec=JSON.parse(localStorage.getItem('sr_v4')||'[]')}catch(e){STATE.qs=QUESTIONS.slice();STATE.rec=[]}}
-function saveData(){try{localStorage.setItem('sq_v4',JSON.stringify(STATE.qs));localStorage.setItem('sr_v4',JSON.stringify(STATE.rec))}catch(e){}}
+function loadData(){try{var s=localStorage.getItem('sq_v4');if(s)STATE.qs=JSON.parse(s);else STATE.qs=QUESTIONS.slice();STATE.rec=JSON.parse(localStorage.getItem('sr_v4')||'[]');var c=localStorage.getItem('sc_v4');if(c){var oc=JSON.parse(c);for(var k in oc)if(oc[k]!==undefined&&oc[k]!==null)CONFIG[k]=oc[k]}}catch(e){STATE.qs=QUESTIONS.slice();STATE.rec=[]}}
+function saveData(){try{localStorage.setItem('sq_v4',JSON.stringify(STATE.qs));localStorage.setItem('sr_v4',JSON.stringify(STATE.rec));localStorage.setItem('sc_v4',JSON.stringify(CONFIG))}catch(e){}}
 
 function route(){var p=window.location.search;if(p.indexOf('mode=admin')!==-1)checkAdmin();else showStart()}
 
@@ -288,12 +288,12 @@ window.exportQuestions=function(){var d={version:'4.0',lastUpdated:new Date().to
 
 function renderRecordsTab(){
   if(!STATE.rec||STATE.rec.length===0)return'<div class="empty">📋 暂无考试记录</div>';
-  var h='<div style="margin-bottom:20px"><button type="button" onclick="exportRecords()" class="btn btn-secondary">📤 导出记录</button><button type="button" onclick="clearRecords()" class="btn btn-danger" style="margin-left:10px">🗑️ 清空</button></div><p style="color:#666;margin-bottom:15px">共 '+STATE.rec.length+' 条记录</p><table class="table"><thead><tr><th>姓名</th><th>分数</th><th>正确</th><th>用时</th><th>时间</th><th>状态</th></tr></thead><tbody>';
+  var h='<div style="margin-bottom:20px"><button type="button" onclick="exportRecords()" class="btn btn-secondary">📤 导出记录</button><button type="button" onclick="clearRecords()" class="btn btn-danger" style="margin-left:10px">🗑️ 清空</button></div><p style="color:#666;margin-bottom:15px">共 '+STATE.rec.length+' 条记录</p><table class="table"><thead><tr><th>姓名</th><th>分数</th><th>正确</th><th>用时</th><th>正确率</th><th>时间</th><th>状态</th></tr></thead><tbody>';
   for(var i=0;i<STATE.rec.length;i++){var r=STATE.rec[i];h+='<tr><td>'+r.nm+'</td><td><strong>'+r.sc+'</strong> / '+r.tt+'</td><td>'+r.correct+' / '+r.tq+'</td><td>'+r.tm+'</td><td>'+r.dt+'</td><td><span class="badge" style="background:'+(r.passed?'#f6ffed;color:#52c41a':'#fff2f0;color:#ff4d4f')+';padding:4px 8px">'+(r.passed?'✓ 及格':'✗ 不及格')+'</span></td></tr>';}
   return h+'</tbody></table>';
 }
 
-window.exportRecords=function(){var rows=[['姓名','分数','总分','正确','总题','用时','时间','状态'].join(',')];for(var i=0;i<STATE.rec.length;i++){var r=STATE.rec[i];rows.push([r.nm,r.sc,r.tt,r.correct,r.tq,r.tm,r.dt,r.passed?'及格':'不及格'].join(','));}var b=new Blob(['\ufeff'+rows.join('\n')],{type:'text/csv;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='考试记录_'+new Date().toLocaleDateString('zh-CN').replace(/\//g,'-')+'.csv';a.click();URL.revokeObjectURL(u);toast('已导出记录','success');};
+window.exportRecords=function(){var rows=[['姓名','分数','总分','正确','总题','用时','正确率','时间','状态'].join(',')];for(var i=0;i<STATE.rec.length;i++){var r=STATE.rec[i];rows.push([r.nm,r.sc,r.tt,r.correct,r.tq,r.tm,Math.round((r.correct/r.tq)*100)+'%',r.dt,r.passed?'及格':'不及格'].join(','));}var b=new Blob(['\ufeff'+rows.join('\n')],{type:'text/csv;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='考试记录_'+new Date().toLocaleDateString('zh-CN').replace(/\//g,'-')+'.csv';a.click();URL.revokeObjectURL(u);toast('已导出记录','success');};
 window.clearRecords=function(){if(!confirm('确定清空所有考试记录？此操作不可恢复！'))return;STATE.rec=[];saveData();showAdmin();toast('记录已清空');};
 
 function renderStatsTab(){
