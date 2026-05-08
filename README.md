@@ -4,13 +4,13 @@
 
 ## 📱 访问地址
 
-- **考试入口**: https://你的用户名.github.io/aqw-scm-exam/
-- **后台管理**: https://你的用户名.github.io/aqw-scm-exam/?mode=admin
+- **考试入口**: https://xiaoguo125.github.io/aqw-scm-exam/
+- **后台管理**: https://xiaoguo125.github.io/aqw-scm-exam/?mode=admin
 
 ## 🔐 后台账号
 
 - **用户名**: admin
-- **密码**: aqw2024scm
+- **密码**: Nc123456
 
 ## ✨ 功能特性
 
