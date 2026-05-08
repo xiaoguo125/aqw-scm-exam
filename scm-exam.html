@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -144,7 +144,7 @@ var QUESTIONS = [
 {id:60,m:7,q:"盘点差异指什么？",a:["不是","导入库存与实际库存差值","预期差异"],n:1,e:"系统导入数与实际盘点数的差值"}
 ];
 
-var CONFIG = {t:'奥琦玮供应链随堂测试',n:20,p:5,s:80,pw:'Nc123456'};
+var CONFIG = {t:'奥琦玮供应链随堂测试',n:20,p:5,s:80,pw:'Nc123456',tm:15,mx:3};
 var STATE = {qs:[],eq:[],ci:0,an:{},nm:'',st:null,timer:null,rec:[],tab:'q'};
 var MODULES = {1:'APP下载与登录',2:'门店订货操作',3:'采购入库/退货',4:'配送入库/退配',5:'委托收货/退回',6:'库存报损/报溢',7:'库存查询与盘点',8:'调拨与领用'};
 
@@ -159,15 +159,43 @@ function route(){var p=window.location.search;if(p.indexOf('mode=admin')!==-1)ch
 
 function showStart(){
   stopTimer();
-  $('app').innerHTML='<div class="container"><div class="card"><h1>📚 '+CONFIG.t+'</h1><p style="text-align:center;color:#666;margin-bottom:30px">扫码参与考试或点击下方开始</p><div style="text-align:center;margin-bottom:30px"><a href="?mode=admin" class="btn btn-secondary" style="font-size:14px">🔧 后台管理</a></div><div class="form-group"><input type="text" id="nameInput" placeholder="请输入您的姓名" required autocomplete="off"></div><button type="button" onclick="startExam()" class="btn btn-primary" style="width:100%">开始考试</button><div style="margin-top:30px;padding:20px;background:#f5f5f5;border-radius:8px"><h3 style="margin-bottom:10px">📖 考试说明</h3><ul style="color:#666;font-size:14px;line-height:2.2;padding-left:20px"><li>共 '+CONFIG.n+' 道题目，每题 '+CONFIG.p+' 分</li><li>满分 '+(CONFIG.n*CONFIG.p)+' 分，及格线 '+CONFIG.s+' 分</li><li>每题 3 个选项，点击选择答案</li><li>提交后显示成绩和错题解析</li></ul></div></div></div>';
+  var remaining=getRemainingAttempts();
+  var tmInfo=CONFIG.tm>0?'时间限制：'+CONFIG.tm+' 分钟':'时间限制：无限制';
+  var ctInfo=CONFIG.mx>0?'考试次数：'+CONFIG.mx+' 次':'考试次数：无限制';
+  var infoBadge='<div style="display:flex;justify-content:center;gap:15px;margin-bottom:20px;flex-wrap:wrap"><span style="background:#e6f7ff;color:#1890ff;padding:8px 16px;border-radius:20px;font-size:14px">'+tmInfo+'</span><span style="background:#f6ffed;color:#52c41a;padding:8px 16px;border-radius:20px;font-size:14px">'+ctInfo+'</span></div>';
+  var infoHtml='<ul style="margin-top:15px;font-size:13px;color:#666;padding-left:20px;line-height:2"><li>共 '+CONFIG.n+' 道题目，每题 '+CONFIG.p+' 分</li><li>满分 '+(CONFIG.n*CONFIG.p)+' 分，及格线 '+CONFIG.s+' 分</li><li>每题 3 个选项，点击选择答案</li><li>提交后显示成绩和错题解析</li></ul>';
+  var startBtn='<button type="button" onclick="startExam()" class="btn btn-primary" style="width:100%;font-size:18px;padding:15px"'+(remaining===0?' disabled':'')+'>'+(remaining>0||remaining<0?'开始考试':'考试次数已用完')+'</button>';
+  $('app').innerHTML='<div class="container"><div class="card"><h1>📚 '+CONFIG.t+'</h1><p style="text-align:center;color:#666;margin-bottom:20px">扫码参与考试</p>'+infoBadge+'<div class="form-group"><input type="text" id="nameInput" placeholder="请输入您的姓名" required autocomplete="off" style="font-size:18px;text-align:center;padding:15px"></div>'+startBtn+'<div style="margin-top:25px"><h3 style="margin-bottom:10px">📖 考试说明</h3>'+infoHtml+'</div><div style="text-align:center;margin-top:20px"><a href="?mode=admin" class="btn btn-secondary" style="font-size:14px">🔧 后台管理</a></div></div></div>';
   setTimeout(function(){var x=$('nameInput');if(x)x.focus()},100);
 }
 
 window.startExam=function(){
   var v=($('nameInput')||{}).value||'';v=v.trim();
   if(!v){toast('请输入姓名','error');return}
+  var rem=getRemainingAttempts();
+  if(rem===0){toast('考试次数已用完，无法再参加考试','error');return}
   STATE.nm=v;STATE.eq=shuffle(STATE.qs.slice()).slice(0,CONFIG.n);STATE.an={};STATE.ci=0;STATE.st=new Date();startTimer();renderQuestion();
 };
+
+function getRemainingAttempts(){
+  if(CONFIG.mx<=0)return-1;
+  var name=STATE.nm||'';
+  if(!name)return-1;
+  var cnt=0;
+  for(var i=0;i<STATE.rec.length;i++){
+    if(STATE.rec[i].nm===name)cnt++;
+  }
+  return CONFIG.mx-cnt;
+}
+
+function checkRemainingAttempts(name){
+  if(CONFIG.mx<=0)return true;
+  var cnt=0;
+  for(var i=0;i<STATE.rec.length;i++){
+    if(STATE.rec[i].nm===name)cnt++;
+  }
+  return cnt<CONFIG.mx;
+}
 
 function renderQuestion(){
   var q=STATE.eq[STATE.ci];if(!q)return;
@@ -216,7 +244,7 @@ window.restartExam=function(){STATE.nm='';STATE.an={};STATE.eq=[];STATE.ci=0;sho
 
 function startTimer(){stopTimer();STATE.timer=setInterval(updateTimer,1000);}
 function stopTimer(){if(STATE.timer){clearInterval(STATE.timer);STATE.timer=null;}}
-function updateTimer(){if(!STATE.st)return;var el=$('timerDisplay');if(!el)return;var d=Math.floor((new Date()-STATE.st)/1000);el.textContent=String(Math.floor(d/60)).padStart(2,'0')+':'+String(d%60).padStart(2,'0');}
+function updateTimer(){if(!STATE.st)return;var el=$('timerDisplay');if(!el)return;var totalSeconds=CONFIG.tm*60;var elapsed=Math.floor((new Date()-STATE.st)/1000);var remain=totalSeconds-elapsed;if(remain<=0){stopTimer();el.textContent='00:00';el.style.color='#ff4d4f';toast('时间到！系统将自动提交试卷','error');setTimeout(function(){submitExam()},500);return;}el.textContent=String(Math.floor(remain/60)).padStart(2,'0')+':'+String(remain%60).padStart(2,'0');if(remain<=60)el.style.color='#ff4d4f';else el.style.color='';}
 
 function checkAdmin(){try{if(sessionStorage.getItem('sal')==='1'){showAdmin();return}}catch(e){}showAdminLogin();}
 function showAdminLogin(){$('app').innerHTML='<div class="container"><div class="card" style="max-width:400px;margin:80px auto"><h1>🔧 考试后台管理</h1><div class="form-group"><input type="text" id="adminUser" placeholder="请输入账号"></div><div class="form-group"><input type="password" id="adminPwd" placeholder="请输入密码"></div><button type="button" onclick="doAdminLogin()" class="btn btn-primary" style="width:100%">登录</button><div style="text-align:center;margin-top:20px"><a href="?" class="btn btn-secondary" style="font-size:14px">← 返回考试</a></div></div></div>';setTimeout(function(){var x=$('adminPwd');if(x)x.focus()},100);}
@@ -278,8 +306,8 @@ function renderStatsTab(){
   return sg+mh+ch;
 }
 
-window.showSettings=function(){$('app').innerHTML='<div class="container"><div class="card" style="max-width:600px;margin:50px auto"><div class="admin-header"><h2>⚙️ 考试设置</h2><button type="button" onclick="showAdmin()" class="btn btn-secondary">返回</button></div><form onsubmit="return false"><div class="form-group"><label>考试标题</label><input type="text" id="setTitle" value="'+CONFIG.t+'"></div><div class="form-group"><label>题目数量</label><input type="number" id="setNum" value="'+CONFIG.n+'" min="1" max="100"></div><div class="form-group"><label>每题分值</label><input type="number" id="setScore" value="'+CONFIG.p+'" min="1"></div><div class="form-group"><label>及格分数</label><input type="number" id="setPass" value="'+CONFIG.s+'" min="1"></div><button type="button" onclick="saveSettings()" class="btn btn-primary">保存设置</button></form><div style="margin-top:30px;padding-top:30px;border-top:1px solid #e8e8e8"><h3 style="margin-bottom:15px">🔐 修改密码</h3><form onsubmit="return false"><div class="form-group"><label>当前密码</label><input type="password" id="oldPwd" required></div><div class="form-group"><label>新密码</label><input type="password" id="newPwd" required></div><div class="form-group"><label>确认新密码</label><input type="password" id="confirmPwd" required></div><button type="button" onclick="changePassword()" class="btn btn-danger">修改密码</button></form></div></div></div>';};
-window.saveSettings=function(){CONFIG.t=($('setTitle')||{}).value||CONFIG.t;CONFIG.n=parseInt(($('setNum')||{}).value)||CONFIG.n;CONFIG.p=parseInt(($('setScore')||{}).value)||CONFIG.p;CONFIG.s=parseInt(($('setPass')||{}).value)||CONFIG.s;saveData();toast('设置已保存','success');};
+window.showSettings=function(){$('app').innerHTML='<div class="container"><div class="card" style="max-width:600px;margin:50px auto"><div class="admin-header"><h2>⚙️ 考试设置</h2><button type="button" onclick="showAdmin()" class="btn btn-secondary">返回</button></div><form onsubmit="return false"><div class="form-group"><label>考试标题</label><input type="text" id="setTitle" value="'+CONFIG.t+'"></div><div class="form-group"><label>题目数量</label><input type="number" id="setNum" value="'+CONFIG.n+'" min="1" max="100"></div><div class="form-group"><label>每题分值</label><input type="number" id="setScore" value="'+CONFIG.p+'" min="1"></div><div class="form-group"><label>及格分数</label><input type="number" id="setPass" value="'+CONFIG.s+'" min="1"></div><div class="form-group"><label>时间限制（分钟，0=不限）</label><input type="number" id="setTime" value="'+CONFIG.tm+'" min="0"></div><div class="form-group"><label>考试次数限制（0=不限）</label><input type="number" id="setMax" value="'+CONFIG.mx+'" min="0"></div><button type="button" onclick="saveSettings()" class="btn btn-primary">保存设置</button></form><div style="margin-top:30px;padding-top:30px;border-top:1px solid #e8e8e8"><h3 style="margin-bottom:15px">🔐 修改密码</h3><form onsubmit="return false"><div class="form-group"><label>当前密码</label><input type="password" id="oldPwd" required></div><div class="form-group"><label>新密码</label><input type="password" id="newPwd" required></div><div class="form-group"><label>确认新密码</label><input type="password" id="confirmPwd" required></div><button type="button" onclick="changePassword()" class="btn btn-danger">修改密码</button></form></div></div></div>';};
+window.saveSettings=function(){CONFIG.t=($('setTitle')||{}).value||CONFIG.t;CONFIG.n=parseInt(($('setNum')||{}).value)||CONFIG.n;CONFIG.p=parseInt(($('setScore')||{}).value)||CONFIG.p;CONFIG.s=parseInt(($('setPass')||{}).value)||CONFIG.s;CONFIG.tm=parseInt(($('setTime')||{}).value)||0;CONFIG.mx=parseInt(($('setMax')||{}).value)||0;saveData();toast('设置已保存','success');};
 window.changePassword=function(){var op=($('oldPwd')||{}).value||'',np=($('newPwd')||{}).value||'',cp=($('confirmPwd')||{}).value||'';if(op!==CONFIG.pw){toast('当前密码错误','error');return;}if(np!==cp){toast('两次输入的新密码不一致','error');return;}if(np.length<6){toast('新密码至少6位','error');return;}CONFIG.pw=np;toast('密码已修改','success');$('oldPwd').value='';$('newPwd').value='';$('confirmPwd').value='';};
 
 function openModal(){var m=$('qModal');if(m)m.classList.add('show');}
