@@ -232,7 +232,7 @@ window.submitExam=function(){
 
 function showResult(score,correct,total,passed,results){
   var acc=Math.round((correct/total)*100),wrong=total-correct;
-  $('app').innerHTML='<div class="container"><div class="card result-card"><h1>'+CONFIG.t+'</h1><p style="color:#666">'+STATE.nm+' 的考试成绩</p><div class="score-big '+(passed?'pass':'fail')+'">'+score+' 分</div><div style="font-size:20px;margin-bottom:10px;color:'+(passed?'#52c41a':'#ff4d4f')+'">'+(passed?'🎉 恭喜及格！':'😢 未及格，继续加油！')+'</div><div class="score-detail"><div><div class="num">'+correct+'</div><div class="label">答对题数</div></div><div><div class="num">'+wrong+'</div><div class="label">答错题数</div></div><div><div class="num">'+acc+'%</div><div class="label">正确率</div></div></div><button type="button" onclick="showReview()" class="btn btn-primary" style="margin-top:15px">查看错题解析</button><br><button type="button" onclick="restartExam()" class="btn btn-secondary" style="margin-top:15px">重新考试</button><div style="margin-top:20px"><a href="?mode=admin" class="btn btn-secondary" style="font-size:14px">🔧 后台管理</a></div></div></div>';
+  $('app').innerHTML='<div class="container"><div class="card result-card"><h1>'+CONFIG.t+'</h1><p style="color:#666">'+STATE.nm+' 的考试成绩</p><div class="score-big '+(passed?'pass':'fail')+'">'+score+' 分</div><div style="font-size:20px;margin-bottom:10px;color:'+(passed?'#52c41a':'#ff4d4f')+'">'+(passed?'🎉 恭喜及格！':'😢 未及格，继续加油！')+'</div><div class="score-detail"><div><div class="num">'+correct+'</div><div class="label">答对题数</div></div><div><div class="num">'+wrong+'</div><div class="label">答错题数</div></div><div><div class="num">'+acc+'%</div><div class="label">正确率</div></div></div><button type="button" onclick="showReview()" class="btn btn-primary" style="margin-top:15px">查看错题解析</button><br><button type="button" onclick="restartExam()" class="btn btn-secondary" style="margin-top:15px">重新考试</button><br><button type="button" onclick="backToStart()" class="btn btn-secondary" style="margin-top:15px">返回首页</button><div style="margin-top:20px"><a href="?mode=admin" class="btn btn-secondary" style="font-size:14px">🔧 后台管理</a></div></div></div>';
   window.lastResults=results;
 }
 
@@ -247,6 +247,7 @@ window.showReview=function(){
 
 window.backToResult=function(){var results=window.lastResults||[],correct=0;for(var i=0;i<results.length;i++)if(results[i].ok)correct++;showResult(correct*CONFIG.p,correct,results.length,(correct*CONFIG.p)>=CONFIG.s,results);};
 window.restartExam=function(){STATE.nm='';STATE.an={};STATE.eq=[];STATE.ci=0;showStart();};
+window.backToStart=function(){STATE.an={};STATE.eq=[];STATE.ci=0;stopTimer();showStart();};
 
 function startTimer(){stopTimer();STATE.timer=setInterval(updateTimer,1000);}
 function stopTimer(){if(STATE.timer){clearInterval(STATE.timer);STATE.timer=null;}}
